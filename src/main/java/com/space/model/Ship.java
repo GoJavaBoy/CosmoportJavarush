@@ -1,6 +1,7 @@
 package com.space.model;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -20,10 +21,11 @@ public class Ship {
     private String planet;
 
     @Column(name = "shipType")
+    @Enumerated(EnumType.STRING)
     private ShipType shipType;
 
     @Column(name = "prodDate")
-    private Long prodDate;
+    private Date prodDate;
 
     @Column(name = "isUsed")
     private Boolean isUsed;
@@ -40,7 +42,7 @@ public class Ship {
     public Ship() {
     }
 
-    public Ship(Long id, String name, String planet, ShipType shipType, Long prodDate, Boolean isUsed, Double speed, Integer crewSize, Double rating) {
+    public Ship(Long id, String name, String planet, ShipType shipType, Date prodDate, Boolean isUsed, Double speed, Integer crewSize, Double rating) {
         this.id = id;
         this.name = name;
         this.planet = planet;
@@ -58,10 +60,10 @@ public class Ship {
         if (o == null || getClass() != o.getClass()) return false;
         Ship that = (Ship) o;
         Calendar calendarThis = Calendar.getInstance();
-        calendarThis.setTimeInMillis(prodDate);
+        calendarThis.setTimeInMillis(prodDate.getTime());
         int prodYearThis = calendarThis.get(Calendar.YEAR);
         Calendar calendarThat = Calendar.getInstance();
-        calendarThat.setTimeInMillis(that.prodDate);
+        calendarThat.setTimeInMillis(that.prodDate.getTime());
         int prodYearThat = calendarThat.get(Calendar.YEAR);
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
@@ -82,7 +84,7 @@ public class Ship {
     @Override
     public String toString() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(prodDate);
+        calendar.setTimeInMillis(prodDate.getTime());
         int prodYear = calendar.get(Calendar.YEAR);
         return "Ship{" +
                 "id=" + id +
@@ -124,10 +126,10 @@ public class Ship {
     }
 
     public Long getProdDate() {
-        return prodDate;
+        return prodDate.getTime();
     }
 
-    public void setProdDate(Long prodDate) {
+    public void setProdDate(Date prodDate) {
         this.prodDate = prodDate;
     }
 

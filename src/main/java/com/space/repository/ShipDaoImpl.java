@@ -5,49 +5,48 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
 public class ShipDaoImpl implements ShipDao{
     private static final Logger logger = LoggerFactory.getLogger(ShipDaoImpl.class);
 
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    @Autowired
+    public void setSessionFactory(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     public void addShip(Ship ship) {
-        Session session = sessionFactory.getCurrentSession();
-        session.persist(ship);
+        entityManager.persist(ship);
         logger.info("Ship successfully added to the database. Ship details: " + ship);
     }
 
     @Override
     public void updateShip(Ship ship) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(ship);
+        entityManager.merge(ship);
         logger.info("Ship successfully updated in database. Ship details: " + ship);
     }
 
     @Override
-    public void removeShip(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Ship ship = session.load(Ship.class, id);
+    public void removeShip(long id) {
+        Ship ship =entityManager.find(Ship.class, id);
         if (ship!=null){
-            session.delete(ship);
+            entityManager.remove(ship);
             logger.info("Ship successfully deleted from database. Ship details: " + ship);
         } else
             logger.info("Ship with id: " + id + " do not exist in the database.");
     }
 
     @Override
-    public Ship getShipById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Ship ship = session.load(Ship.class, id);
+    public Ship getShipById(long id) {
+        Ship ship = entityManager.find(Ship.class, id);
         if (ship!=null){
             logger.info("Ship successfully loaded from database. Ship details: " + ship);
             return ship;
@@ -59,8 +58,7 @@ public class ShipDaoImpl implements ShipDao{
     @Override
     @SuppressWarnings("Unchecked")
     public List<Ship> shipsList() {
-        Session session = sessionFactory.getCurrentSession();
-        List<Ship> shipList = session.createQuery("from Ship").list();
+        List<Ship> shipList = entityManager.createQuery("Select * from Ship").getResultList();
         for (Ship ship : shipList){
             logger.info("Ship list: " + ship);
         }

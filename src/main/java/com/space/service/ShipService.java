@@ -9,9 +9,9 @@ public interface ShipService {
 
     void updateShip(Ship ship);
 
-    void removeShip(int id);
+    void removeShip(long id);
 
-    Ship getShipById(int id);
+    Ship getShipById(long id);
 
     List<Ship> shipsList();
 }
